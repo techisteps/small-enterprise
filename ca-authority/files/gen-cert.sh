@@ -8,6 +8,17 @@ OVERWRITE_FLAG=$2
 CERT_FILE_NAME="/root/ca/certs/${CERT_NAME}.crt"
 CERT_CSR_NAME="/root/ca/requests/${CERT_NAME}.csr"
 
+
+if [ $# -eq 0 ]; then
+    echo "Error: No arguments provided."
+    echo "Usage: gen-cert.sh <certificate_name> [overwrite_flag]"
+    echo "Example: gen-cert.sh server Y #if certificate exists, will overwrite)"
+    echo "Example: gen-cert.sh server   #if certificate exists, will not overwrite"
+    echo "CSR file must be present in /root/ca/requests/ folder."
+    echo "Only basename of CSR file is required."
+    exit 1
+fi
+
 check_files() {
     if [[ -e ${CERT_CSR_NAME} ]]; then
         echo "CSR file exist" $?
@@ -36,7 +47,7 @@ if [[ -e ${CERT_FILE_NAME} ]]; then
         gen_cert
     else 
         echo "Certificate Exists. If you want to proceed, pass Y as overwrite flag."
-        exit 1
+        exit 3
     fi
 
 else
