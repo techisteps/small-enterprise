@@ -61,3 +61,5 @@ https://wiki.archlinux.org/title/Easy-RSA
 https://archlinux.org/news/ca-certificates-update/
 https://unix.stackexchange.com/questions/373492/installing-certificates-on-arch
 https://wiki.archlinux.org/title/User:Grawity/Adding_a_trusted_CA_certificate
+
+https://groups.google.com/g/vglug/c/us3f5Ac-jaU

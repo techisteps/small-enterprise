@@ -37,8 +37,13 @@ create_folders() {
 # [[ ! -d /root/ca ]] && create_folders
 create_folders
 
-print_msg "Creating Serial Number"
-echo 012345678 > /root/ca/serial
+create_serial() {
+    print_msg "Creating Serial Number"
+    echo 01 > /root/ca/serial
+}
+
+[[ -e /root/ca/serial ]] && echo "Serial Exists"
+[[ ! -e /root/ca/serial ]] && create_serial
 
 
 create_passfile() {
@@ -153,14 +158,9 @@ testing() {
 }
 
 testing
-[[ $? -ne 0 ]] && echo "Testing Failed" || echo "Testing Passed"
+[[ $? -ne 0 ]] && echo "Testing Failed" || echo "All test passed..."
 
 
-
-
-
-
-openssl ca -in dnsmaster.csr -keyfile /root/ca/private/cakey.pem -cert /root/ca/certs/cacert.pem -passin file:/root/ca/private/passphrase.txt -out dnsmaster.crt 
 
 
 
