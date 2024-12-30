@@ -1,0 +1,24 @@
+name: dnsmaster
+
+services:
+  caauthority:
+    build: .
+    tty: true
+    stdin_open: true
+    container_name: dnsmaster
+    hostname: dnsmaster.jai.net
+    networks:
+      jai_net:
+        ipv4_address: 172.28.0.12
+    
+    # ports:
+    #   - "80:80"
+    # depends_on:
+    #   - db
+    # command: tail -f /dev/null &
+    # command: /bin/bash -c "sleep infinity"
+
+networks:
+  jai_net:
+    external: true
+
