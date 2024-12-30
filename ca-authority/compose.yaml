@@ -7,6 +7,8 @@ services:
     stdin_open: true
     container_name: caauthority
     hostname: caauthority.jai.net
+    volumes:
+      - ./ca/:/root/ca
     networks:
       jai_net:
         ipv4_address: 172.28.0.11

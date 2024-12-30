@@ -13,6 +13,7 @@ COPY files/setup-service.sh /setup-service.sh
 
 ### Changed CA default dir and policy_match
 COPY files/openssl.cnf /etc/ssl/openssl.cnf
+COPY files/gen-cert.sh /gen-cert.sh
 
 ### Pregenerated CA files
 # COPY files/passphrase.txt /root/ca/private/passphrase.txt
