@@ -3,6 +3,7 @@
 # set -x
 
 CERT_NAME=$1
+OVERWRITE_FLAG=$2
 
 CERT_FILE_NAME="/root/ca/certs/${CERT_NAME}.crt"
 CERT_CSR_NAME="/root/ca/requests/${CERT_NAME}.csr"
@@ -22,16 +23,22 @@ gen_cert() {
     openssl ca -in ${CERT_CSR_NAME} -keyfile /root/ca/private/cakey.pem -cert /root/ca/certs/cacert.pem -passin file:/root/ca/private/passphrase.txt -out ${CERT_FILE_NAME}
 }
 
-REPLY=""
+if [[ $OVERWRITE_FLAG = "Y" || $OVERWRITE_FLAG = "y" ]]; then
+    OVERWRITE_FLAG="Y"
+else
+    OVERWRITE_FLAG="N"
+fi
+
+
 if [[ -e ${CERT_FILE_NAME} ]]; then
-    echo "Certificate Exists. Do you want to proceed? (Y/N)"
-    read REPLY
-    if [[ $REPLY == "Y" || $REPLY == "y" ]]; then
+
+    if [[ $OVERWRITE_FLAG = "Y" ]]; then
         gen_cert
-    else
-        echo "Answer is not Y thus exiting..."
+    else 
+        echo "Certificate Exists. If you want to proceed, pass Y as overwrite flag."
         exit 1
     fi
+
 else
     gen_cert
 fi
