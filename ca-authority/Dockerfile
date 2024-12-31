@@ -10,6 +10,8 @@ RUN pacman -Sy --noconfirm openssl openssh ntp
 
 
 COPY files/setup-service.sh /setup-service.sh
+COPY files/setup-environment.sh /setup-environment.sh
+COPY files/sample_dnsmaster.cnf /root/ca/requests/dnsmaster.cnf
 
 ### Changed CA default dir and policy_match
 COPY files/openssl.cnf /etc/ssl/openssl.cnf
