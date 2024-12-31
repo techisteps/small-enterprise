@@ -120,7 +120,7 @@ cat >> /root/ca/requests/dnsmaster.cnf <<EOF
 [ req ]
 prompt = no
 distinguished_name  = req_distinguished_name
-#req_extensions      = req_ext
+req_extensions      = req_ext
 
 [ req_distinguished_name ]
 C = AU
@@ -132,7 +132,7 @@ CN = dnsmaster.jai.net
 emailAddress = admin@dnsmaster.jai.net
 
 [ req_ext ]
-subjextAltName      = @alt_names
+subjectAltName      = @alt_names
 
 [ alt_names ]
 DNS.1   = dnsmaster.jai.net

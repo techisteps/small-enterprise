@@ -1,7 +1,7 @@
 [ req ]
 prompt = no
 distinguished_name  = req_distinguished_name
-#req_extensions      = req_ext
+req_extensions      = req_ext
 
 [ req_distinguished_name ]
 C = AU
@@ -13,7 +13,27 @@ CN = dnsmaster.jai.net
 emailAddress = admin@dnsmaster.jai.net
 
 [ req_ext ]
-subjextAltName      = @alt_names
+subjectAltName      = @alt_names
+
+[ alt_names ]
+DNS.1   = dnsmaster.jai.net
+IP.1    = 172.28.0.12
+[ req ]
+prompt = no
+distinguished_name  = req_distinguished_name
+req_extensions      = req_ext
+
+[ req_distinguished_name ]
+C = AU
+ST = NSW
+L = Wenty
+O = JAI.NET
+OU = systems
+CN = dnsmaster.jai.net
+emailAddress = admin@dnsmaster.jai.net
+
+[ req_ext ]
+subjectAltName      = @alt_names
 
 [ alt_names ]
 DNS.1   = dnsmaster.jai.net
