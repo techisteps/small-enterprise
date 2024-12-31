@@ -70,7 +70,7 @@ openssl x509 -in /root/ca/certs/cacert.pem -noout -nocert -text
 ```
 
 
-
+### Additional Files
 Individual files can be overwritten by uncommenting COPY commands in Dockerfile.
 ```Dockerfile
 ### Pregenerated CA files
@@ -80,15 +80,14 @@ Individual files can be overwritten by uncommenting COPY commands in Dockerfile.
 # COPY files/cacert.pem /root/ca/certs/cacert.pem
 ```
 
-Once the CA Authority is setup, you can generate a certificate for any service. `ca` folder in the current directory is mounted to `/root/ca` and contains the CA Authority files. It's always a good idea to keep strong backup policy for the CA files.
+Once the CA Authority is setup, you can generate a certificate for any service. `ca` folder in the current project directory is mounted to `/root/ca` and contains the CA Authority files. It's always a good idea to keep strong backup policy for the CA files.
 
 
-### Generate CSR
+## Generate CSR
 To generate a new CSR file, run the following command on the **host machine for which certificate is being generated**:
 
 ```bash
-# openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
-# First generate private key (Read explanation below)
+# First generate private key (Read explanation below in the README.md file)
 openssl genrsa -aes256 -out dnsmaster.pem 2048
 # Then generate CSR (Use sample config file "openssl_new_cacert.cnf")
 openssl req -new -config openssl_new_cacert.cnf -days 3650 -key dnsmaster.pem -out dnsmaster.csr
@@ -99,73 +98,122 @@ Copy above generated CSR file to `/root/ca/requests` folder on CA authority serv
 ### Generate Certificate
 To generate a new certificate, place the CSR file in `/root/ca/requests` folder and run the following command:
 
-```bash
-docker compose up --remove-orphans --wait --build && docker exec caauthority /gen-cert.sh dnsmaster y
-
-# or 
-
-docker compose up --remove-orphans --wait --build 
-docker exec caauthority /gen-cert.sh dnsmaster y
-
-```
+Run container and generate the Client CSR.
 
 ```bash
+# Run container
+docker compose up --remove-orphans --wait --build && docker attach caauthority
+
+# Setup environment
+# bash /setup-environment.sh
+
 # Generate Private Key
 openssl genrsa -out /root/ca/private/dnsmaster.pem 2048
 
-# Copy sample config file "sample_dnsmaster.cnf" as "dnsmaster.cnf" to "/root/ca/requests" folder
+### Option 1 ###
+# Copy sample config file "sample_dnsmaster.cnf" as "dnsmaster.cnf" to "/root/ca/requests" folder and edit respectivly
 cp sample_dnsmaster.cnf /root/ca/requests/dnsmaster.cnf
 
+### Option 2 ###
+#Or manually create the config file
+cat >> /root/ca/requests/dnsmaster.cnf <<EOF
+[ req ]
+prompt = no
+distinguished_name  = req_distinguished_name
+#req_extensions      = req_ext
 
-# Generate CSR
-openssl req -new -key /root/ca/private/dnsmaster.pem -sha256 -config /root/ca/requests/dnsmaster.cnf -out /root/ca/certs/dnsmaster.csr
+[ req_distinguished_name ]
+C = AU
+ST = NSW
+L = Wenty
+O = JAI.NET
+OU = systems
+CN = dnsmaster.jai.net
+emailAddress = admin@dnsmaster.jai.net
 
-# Chekc CSR
-openssl req -in /root/ca/certs/dnsmaster.csr -noout -text
+[ req_ext ]
+subjextAltName      = @alt_names
+
+[ alt_names ]
+DNS.1   = dnsmaster.jai.net
+IP.1    = 172.28.0.12
+EOF
+
+
+# Generate Client CSR
+openssl req -new -key /root/ca/private/dnsmaster.pem -sha256 -config /root/ca/requests/dnsmaster.cnf -out /root/ca/requests/dnsmaster.csr
+
+# Chekc Client CSR
+openssl req -in /root/ca/requests/dnsmaster.csr -noout -text
+
+```
+
+Generate a new certificate, place the CSR file in `/root/ca/requests` folder and run the following command:
+
+***Option 1***  
+Generate certificate from scripts.
+
+```bash
+#docker compose up --remove-orphans --wait --build 
+docker exec caauthority /gen-cert.sh dnsmaster y
+```
+
+***Option 2***  
+Generate certificate manualy step by step.
+
+```bash
 
 # Generate Certificate
 #openssl ca -config /etc/ssl/openssl.cnf -notext -in /root/ca/certs/dnsmaster.csr -extensions /root/ca/requests/dnsmaster.cnf -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/dnsmaster.crt -cert /root/ca/certs/cacert.pem -keyfile /root/ca/private/cakey.pem 
-openssl ca -config /etc/ssl/openssl.cnf -notext -in /root/ca/certs/dnsmaster.csr -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/dnsmaster.crt -cert /root/ca/certs/cacert.pem -keyfile /root/ca/private/cakey.pem 
+openssl ca -config /etc/ssl/openssl.cnf -notext -in /root/ca/certs/dnsmaster.csr -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/dnsmaster.crt -cert /root/ca/certs/cacert.pem -keyfile /root/ca/private/cakey.pem
 
 # Check the certificate 
 openssl x509 -in /root/ca/certs/dnsmaster.crt -noout -text
 
-
-# jai@LAPTOP-2KPCVV99:/mnt/c/Users/jaiku$ cd ../../DevBox/small-enterprise
-# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp caauthority:/root/ca/certs/dnsmaster.crt dnsmaster.crt
-# Successfully copied 3.58kB to /mnt/c/DevBox/small-enterprise/dnsmaster.crt
-# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp dnsmaster.crt dnsmaster:/dnsmaster.crt
-# Successfully copied 3.58kB to dnsmaster:/dnsmaster.crt
-# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp caauthority:/root/ca/certs/cacert.pem cacert.pem
-# Successfully copied 3.58kB to /mnt/c/DevBox/small-enterprise/cacert.pem
-# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp cacert.pem dnsmaster:/cacert.pem
-# Successfully copied 3.58kB to dnsmaster:/cacert.pem
-# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$
-
-
-
-trust anchor --store /certs/cacert.pem
-ls -lrt /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
-trust list | head -10
-trust check-format /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
 ```
-
 
 The above command will generate the certificate in `/root/ca/certs` folder.
 
 
-### Add CA Certificate to system truststore
-To add CA Certificate to system truststore, run the following command:
+### Add CA Certificate to clients system truststore
+
+Copy the generated certificate and CA certificate to the client machine.
+In this example `cacert.pem` and `dnsmaster.crt` are copied to the client machine.
+Run below given `trust` commands on the client machine to add the CA certificate to the system truststore.
 
 ```bash
+# docker cp caauthority:/root/ca/certs/dnsmaster.crt dnsmaster.crt
+# docker cp dnsmaster.crt dnsmaster:/dnsmaster.crt
+# docker cp caauthority:/root/ca/certs/cacert.pem cacert.pem
+# docker cp cacert.pem dnsmaster:/cacert.pem
+
+# Add CA Certificate to system truststore
+trust anchor --store /cacert.pem
+
+# Check CA Certificate in system truststore
+ls -lrt /etc/ca-certificates/trust-source/caauthority.jai.net*
+ls -lrt /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
+
+# Check CA Certificate
+trust list | head A -20
+trust list | grep -A 10 -B 10 caauthority
+
+# Check CA Certificate format
+trust check-format /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
+
+
+# ONce CA Certificate is added to system truststore, we can verify certificates
+openssl verify /cacert.pem
+openssl verify /dnsmaster.crt
+
 ```
 
 
-
-### Useful Commands
+## Useful Commands
 
 ```bash
 docker compose up --remove-orphans --wait
+
 docker compose up --remove-orphans --wait --build
 ```
 
@@ -179,9 +227,13 @@ docker attach caauthority
 
 ```bash
 docker compose up --remove-orphans --wait --build && docker exec caauthority /setup-service.sh
+
 docker compose up --remove-orphans --wait && docker exec caauthority /gen-cert.sh
+
 docker compose up --remove-orphans --wait
+
 docker exec caauthority /gen-cert.sh dnsmaster y
+
 docker compose up --remove-orphans --wait --build && docker attach caauthority
 ```
 
