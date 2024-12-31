@@ -1,0 +1,7 @@
+update docs:
+    - Cleanup README for caauth
+    - Cleanup README for dnsmaster
+
+
+In /mnt/c/DevBox/small-enterprise/ca-authority/ca/requests/dnsmaster.cnf check
+#req_extensions      = req_ext

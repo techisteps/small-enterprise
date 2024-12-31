@@ -1,25 +1,33 @@
 # CA Authority
 
-### Setup CA Authority
+## Setup CA Authority
+### Using Scripts
 To setup fresh CA Authority, run the following command:
 
 ```bash
-rm -ef ./ca
-docker compose up --remove-orphans --wait
+rm -rf ./ca
+docker compose up --remove-orphans --wait --build
+docker exec caauthority /setup-environment.sh
 docker exec caauthority /setup-service.sh
 ```
+
+### Manually
 
 If you want setup manually step by step then run the following command:
 
 ```bash
 # If need fresh installation than remove existing CA files
-rm -ef ./ca
+rm -rf ./ca
 
-# run container
-docker compose up --remove-orphans --wait
+# Run container
+docker compose up --remove-orphans --wait --build && docker attach caauthority
+
+# Setup environment
+bash /setup-environment.sh
+
 
 # Gerate Passfile
-echo "secret" > /root/ca/private/passphrase.txt
+echo "super secret" > /root/ca/private/passphrase.txt
 
 # Generate Private Key using passfile
 openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
@@ -27,13 +35,37 @@ openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/
 # Check the private key
 openssl rsa -in /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -check -noout
 
+# Generate CA Config file
+cat >> /root/ca/requests/openssl_new_cacert.cnf <<EOF
+[ req ]
+prompt = no
+distinguished_name = req_distinguished_name
+x509_extensions = v3_ca
+
+[ req_distinguished_name ]
+C = AU
+ST = NSW
+L = Wenty
+O = JAI.NET
+OU = systems
+CN = caauthority.jai.net
+emailAddress = admin@caauthority.jai.net
+
+[ v3_ca ]
+
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = critical,CA:true
+EOF
+
+
 
 #Generate CA Certificate
-openssl req -config /etc/ssl/openssl.cnf -extensions v3_ca -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -new -x509 -days 3650 -out /root/ca/certs/cacert.pem
+# openssl req -config /etc/ssl/openssl.cnf -extensions v3_ca -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -new -x509 -days 3650 -out /root/ca/certs/cacert.pem
+openssl req -config /root/ca/requests/openssl_new_cacert.cnf -extensions v3_ca -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -new -x509 -days 3650 -out /root/ca/certs/cacert.pem
 
 # Check the certificate
 openssl x509 -in /root/ca/certs/cacert.pem -noout -nocert -text
-
 
 ```
 
@@ -76,6 +108,48 @@ docker compose up --remove-orphans --wait --build
 docker exec caauthority /gen-cert.sh dnsmaster y
 
 ```
+
+```bash
+# Generate Private Key
+openssl genrsa -out /root/ca/private/dnsmaster.pem 2048
+
+# Copy sample config file "sample_dnsmaster.cnf" as "dnsmaster.cnf" to "/root/ca/requests" folder
+cp sample_dnsmaster.cnf /root/ca/requests/dnsmaster.cnf
+
+
+# Generate CSR
+openssl req -new -key /root/ca/private/dnsmaster.pem -sha256 -config /root/ca/requests/dnsmaster.cnf -out /root/ca/certs/dnsmaster.csr
+
+# Chekc CSR
+openssl req -in /root/ca/certs/dnsmaster.csr -noout -text
+
+# Generate Certificate
+#openssl ca -config /etc/ssl/openssl.cnf -notext -in /root/ca/certs/dnsmaster.csr -extensions /root/ca/requests/dnsmaster.cnf -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/dnsmaster.crt -cert /root/ca/certs/cacert.pem -keyfile /root/ca/private/cakey.pem 
+openssl ca -config /etc/ssl/openssl.cnf -notext -in /root/ca/certs/dnsmaster.csr -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/dnsmaster.crt -cert /root/ca/certs/cacert.pem -keyfile /root/ca/private/cakey.pem 
+
+# Check the certificate 
+openssl x509 -in /root/ca/certs/dnsmaster.crt -noout -text
+
+
+# jai@LAPTOP-2KPCVV99:/mnt/c/Users/jaiku$ cd ../../DevBox/small-enterprise
+# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp caauthority:/root/ca/certs/dnsmaster.crt dnsmaster.crt
+# Successfully copied 3.58kB to /mnt/c/DevBox/small-enterprise/dnsmaster.crt
+# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp dnsmaster.crt dnsmaster:/dnsmaster.crt
+# Successfully copied 3.58kB to dnsmaster:/dnsmaster.crt
+# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp caauthority:/root/ca/certs/cacert.pem cacert.pem
+# Successfully copied 3.58kB to /mnt/c/DevBox/small-enterprise/cacert.pem
+# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$ docker cp cacert.pem dnsmaster:/cacert.pem
+# Successfully copied 3.58kB to dnsmaster:/cacert.pem
+# jai@LAPTOP-2KPCVV99:/mnt/c/DevBox/small-enterprise$
+
+
+
+trust anchor --store /certs/cacert.pem
+ls -lrt /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
+trust list | head -10
+trust check-format /etc/ca-certificates/trust-source/caauthority.jai.net.p11-kit
+```
+
 
 The above command will generate the certificate in `/root/ca/certs` folder.
 
