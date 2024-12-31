@@ -84,6 +84,8 @@ Once the CA Authority is setup, you can generate a certificate for any service. 
 
 
 ## Generate CSR
+> Note:  Ideally the CSR should be generated on the **client machine** becuase the private key is generated on the client machine. But just for convienience we are generating it on the **host machine**. The reason is that we don't want to copy the private key to the client machine.
+
 To generate a new CSR file, run the following command on the **host machine for which certificate is being generated**:
 
 ```bash
