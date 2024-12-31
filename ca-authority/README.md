@@ -1,6 +1,5 @@
 # CA Authority
 
-
 ### Setup CA Authority
 To setup fresh CA Authority, run the following command:
 
@@ -9,6 +8,36 @@ rm -ef ./ca
 docker compose up --remove-orphans --wait
 docker exec caauthority /setup-service.sh
 ```
+
+If you want setup manually step by step then run the following command:
+
+```bash
+# If need fresh installation than remove existing CA files
+rm -ef ./ca
+
+# run container
+docker compose up --remove-orphans --wait
+
+# Gerate Passfile
+echo "secret" > /root/ca/private/passphrase.txt
+
+# Generate Private Key using passfile
+openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
+
+# Check the private key
+openssl rsa -in /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -check -noout
+
+
+#Generate CA Certificate
+openssl req -config /etc/ssl/openssl.cnf -extensions v3_ca -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -new -x509 -days 3650 -out /root/ca/certs/cacert.pem
+
+# Check the certificate
+openssl x509 -in /root/ca/certs/cacert.pem -noout -nocert -text
+
+
+```
+
+
 
 Individual files can be overwritten by uncommenting COPY commands in Dockerfile.
 ```Dockerfile
@@ -27,7 +56,7 @@ To generate a new CSR file, run the following command on the **host machine for 
 
 ```bash
 # openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
-# First generate private key
+# First generate private key (Read explanation below)
 openssl genrsa -aes256 -out dnsmaster.pem 2048
 # Then generate CSR (Use sample config file "openssl_new_cacert.cnf")
 openssl req -new -config openssl_new_cacert.cnf -days 3650 -key dnsmaster.pem -out dnsmaster.csr
@@ -84,6 +113,7 @@ docker compose up --remove-orphans --wait --build && docker attach caauthority
 
 
 ### Useful Links:
+[Youtube: CA Server - OpenSSL](https://www.youtube.com/watch?v=nOSl4dmywe8)  
 [Wiki: Transport_Layer_Security](https://wiki.archlinux.org/title/Transport_Layer_Security)  
 [Youtube: OpenSSL Certification Authority (CA) on Ubuntu Server](https://www.youtube.com/watch?v=oCl0gzLPPMI)  
 [Wiki: NTP](https://wiki.archlinux.org/title/Network_Time_Protocol_daemon)  
@@ -94,3 +124,47 @@ docker compose up --remove-orphans --wait --build && docker attach caauthority
 
 For Error Messages:  
 [Error while configuring Certificate Authority server](https://groups.google.com/g/vglug/c/us3f5Ac-jaU)  
+
+
+### Explanations:
+- genrsa:
+
+genrsa is used to generate RSA private key.
+
+```bash
+# Before generating private key of 512 bits
+openssl genrsa 512
+
+#but becuse we need strong encryption thus we'll use generate a private key with 4096 bits
+openssl genrsa 4096
+
+# and save the output to a location with
+openssl genrsa 4096 > /root/ca/private/cakey.pem
+## or
+openssl genrsa -out /root/ca/private/cakey.pem 4096
+
+# We also have to protect private key with passphrase so no one can read it without passphrase.
+# We can use -aes256 to enforce password to be entered at the time of key generation.
+openssl genrsa -aes256 -out /root/ca/private/cakey.pem 4096 
+#or
+# We can also use -passout option to pass passphrase from file instead of typing it.
+openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
+
+
+# Need to verify the private key. This is used to verify the integrity of the private key.
+## This option will only check the integrity of the key.
+openssl rsa -in /root/ca/private/cakey.pem -check -noout
+
+## Or this option will check the integrity of the key and will also print the key details with key, if the key is valid.
+openssl rsa -in /root/ca/private/cakey.pem -check -text
+
+## Or this option will check the integrity of the key and will also print the key details but not the key, if the key is valid.
+openssl rsa -in /root/ca/private/cakey.pem -check -text -noout
+
+## we can also pass passphrase from file
+openssl rsa -in /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -check -noout
+
+#or 
+cat /root/ca/private/cakey.pem
+ 
+```

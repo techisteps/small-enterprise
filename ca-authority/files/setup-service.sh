@@ -39,6 +39,7 @@ create_folders
 
 create_serial() {
     print_msg "Creating Serial Number"
+    # openssl rand -hex 16 > /root/ca/serial
     echo 01 > /root/ca/serial
 }
 
@@ -65,6 +66,7 @@ generate_keys() {
 
     # cd /root/ca/private
     # echo "this is a super secret passphrase" > /root/ca/private/passphrase.txt
+    # Read explanation in README.md file.
     openssl genrsa -aes256 -passout file:/root/ca/private/passphrase.txt -out /root/ca/private/cakey.pem 4096
     # other options are stdin, pass:foobar, and file:filename
 
@@ -123,7 +125,8 @@ generate_cacert() {
 
 
     # openssl req -x509 -config /root/ca/requests/openssl_new_cacert.cnf -nodes -days 3650 -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/cacert.pem
-    openssl req -new -x509 -config /root/ca/requests/openssl_new_cacert.cnf -days 3650 -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/cacert.pem
+    # openssl req -new -x509 -config /root/ca/requests/openssl_new_cacert.cnf -days 3650 -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -out /root/ca/certs/cacert.pem
+    openssl req -config /etc/ssl/openssl.cnf -extensions v3_ca -key /root/ca/private/cakey.pem -passin file:/root/ca/private/passphrase.txt -new -x509 -days 3650 -out /root/ca/certs/cacert.pem
 
 
     # Check the certificate
