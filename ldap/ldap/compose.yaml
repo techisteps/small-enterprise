@@ -1,0 +1,22 @@
+services:
+  kldap:
+    container_name: kldap
+    hostname: kldap.jai.net
+    build: .
+    networks:
+      - "krb5"
+    ports:
+      - "389:389"
+      - "636:636"
+      - "666:666"
+    # post_start:
+    #   - command: /setup-service.sh
+    #     user: root
+    # command: tail -f /dev/null
+
+
+networks:
+  krb5:
+    external: true
+    name: krb5
+    driver: bridge
