@@ -1,0 +1,34 @@
+docker cp kserver:/etc/krb5.keytab krb5.keytab
+docker cp krb5.keytab kclient:/etc/krb5.keytab
+docker cp krb5.keytab kssh:/etc/krb5.keytab
+
+
+
+docker cp kserver:/etc/krb5.conf krb5.conf
+docker cp krb5.conf kclient:/etc/krb5.conf
+docker cp krb5.conf kssh:/etc/krb5.conf
+
+
+-- docker cp kserver:/etc/krb5kdc/kdc.conf kdc.conf
+-- docker cp kdc.conf kclient:/etc/krb5kdc/kdc.conf
+-- docker cp kdc.conf kssh:/etc/krb5kdc/kdc.conf
+
+
+
+
+[libdefaults]
+default_realm = JAI.NET
+forwardable = true
+spake_preauth_groups = edwards25519
+dns_lookup_kdc = false
+dns_lookup_realm = true
+
+[realms]
+JAI.NET = {
+    kdc = kdc.jai.net
+    admin_server = kdc.jai.net
+}
+
+[domain_realm]
+.jai.net = JAI.NET
+jai.net = JAI.NET

@@ -1,0 +1,123 @@
+# docker rm $(docker ps -aq)
+# docker buildx build -t kserver:v1 .
+# docker run -dit --net=krb5 --name kserver --hostname kdc.jai.net kserver:v1 /bin/bash
+# docker attach kserver
+# docker exec kserver /setup-service.sh
+
+# docker exec kserver service krb5-kdc start
+# docker exec kserver service krb5-admin-server start
+
+# Update the package list and install the necessary packages
+
+
+# RUN kdb5_util create -s -r JAI.NET -P jai
+# RUN kadmin.local -q 'addprinc -pw jai admin/admin'
+# RUN kadmin.local -q 'addprinc -pw jai root/admin'
+# RUN kadmin.local -q 'addprinc -pw jai testuser/user'
+# krb5kdc
+
+# SHELL ["/bin/bash", "-c"]
+
+CMD ["cd", "/", "&&", "./setup-service.sh", ">", "./setup-service.log"]
+# && ["krb5kdc"] && ["/bin/bash"]
+
+# SHELL ["/bin/bash", "-c"]
+# CMD ["service", "krb5-kdc", "start"] && ["service", "krb5-admin-server", "start"] && ["service", "--status-all"]
+
+# Configure the Kerberos realm
+# ENV REALM=EXAMPLE.COM
+# ENV DOMAIN=example.com
+
+# Create the Kerberos configuration file
+# COPY krb5.conf /etc/krb5.conf
+
+# Create the Kerberos database
+# RUN krb5kdc -r ${REALM} -s -P /var/krb5kdc/principal
+
+# Start the Kerberos KDC and admin server
+# CMD ["krb5kdc", "-r", "${REALM}", "-s", "-P", "/var/krb5kdc/principal"] && \
+#     ["krb5kadmind", "-r", "${REALM}", "-s", "-P", "/var/krb5kdc/principal"]
+
+# CMD /bin/bash
+
+
+
+# Default Kerberos version 5 realm: jai
+
+# Enter the hostnames of Kerberos servers in the jai Kerberos realm separated by spaces.
+
+# Kerberos servers for your realm: kerbs.jai.net
+
+# Enter the hostname of the administrative (password changing) server for the jai Kerberos realm.
+
+# Administrative server for your Kerberos realm: kerbs.jai.net
+
+
+# Configuring krb5-admin-server
+# -----------------------------
+
+# Setting up a Kerberos Realm
+
+# This package contains the administrative tools required to run the Kerberos master server.
+
+# However, installing this package does not automatically set up a Kerberos realm.  This can be done later by running the "krb5_newrealm" command.
+
+# Please also read the /usr/share/doc/krb5-kdc/README.KDC file and the administration guide found in the krb5-doc package.
+
+# invoke-rc.d: could not determine current runlevel
+# invoke-rc.d: policy-rc.d denied execution of start.
+# Processing triggers for libc-bin (2.39-0ubuntu8.3) ...
+# root@0e879bcd34cb:/# krb5_newrealm
+# This script should be run on the master KDC/admin server to initialize
+# a Kerberos realm.  It will ask you to type in a master key password.
+# This password will be used to generate a key that is stored in
+# /etc/krb5kdc/stash.  You should try to remember this password, but it
+# is much more important that it be a strong password than that it be
+# remembered.  However, if you lose the password and /etc/krb5kdc/stash,
+# you cannot decrypt your Kerberos database.
+# Initializing database '/var/lib/krb5kdc/principal' for realm 'jai',
+# master key name 'K/M@jai'
+# You will be prompted for the database Master Password.
+# It is important that you NOT FORGET this password.
+# Enter KDC database master key: jai
+# Re-enter KDC database master key to verify: jai
+#  * Starting Kerberos KDC krb5kdc                                                                                                                                                     [ OK ]
+#  * Starting Kerberos administrative servers kadmind                                                                                                                                         kadmind: Cannot open /etc/krb5kdc/kadm5.acl: No such file or directory while initializing ACL file, aborting
+#                                                                                                                                                                                      [fail]
+
+
+# Now that your realm is set up you may wish to create an administrative
+# principal using the addprinc subcommand of the kadmin.local program.
+# Then, this principal can be added to /etc/krb5kdc/kadm5.acl so that
+# you can use the kadmin program on other computers.  Kerberos admin
+# principals usually belong to a single user and end in /admin.  For
+# example, if jruser is a Kerberos administrator, then in addition to
+# the normal jruser principal, a jruser/admin principal should be
+# created.
+
+# Don't forget to set up DNS information so your clients can find your
+# KDC and admin servers.  Doing so is documented in the administration
+# guide.
+# root@0e879bcd34cb:/#
+
+
+
+
+
+
+
+# root@0e879bcd34cb:/# ls -lrt /var/lib/krb5kdc/
+# total 16
+# -rw------- 1 root root    0 Dec 23 12:28 principal.kadm5.lock
+# -rw------- 1 root root 8192 Dec 23 12:28 principal.kadm5
+# -rw------- 1 root root 8192 Dec 23 12:28 principal
+# -rw------- 1 root root    0 Dec 23 12:28 principal.ok
+
+
+# root@0e879bcd34cb:/# ls -lrt /etc/krb5
+# krb5.conf  krb5kdc/
+# root@0e879bcd34cb:/# ls -lrt /etc/krb5kdc/
+# total 12
+# -rw-r--r-- 1 root root 500 Dec 23 12:25 kdc.conf
+# -rw------- 1 root root  68 Dec 23 12:28 stash
+# -rw-r--r-- 1 root root 336 Dec 23 12:28 kadm5.acl

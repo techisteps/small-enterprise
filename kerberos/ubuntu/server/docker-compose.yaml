@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  kerberos-server:
+    image: ubuntu:24.04
+    hostname: kdc.jai.net
+    container_name: kerberos-server
+    volumes:
+      - ./krb5.conf:/etc/krb5.conf
+      - ./kadm5.acl:/etc/krb5kdc/kadm5.acl
+    ports:
+      - "88:88"  # Kerberos authentication port
+      - "749:749"  # Kerberos administration port
+    # command: >
+    #   bash -c "
+    #     apt-get update && 
+    #     apt-get install -y krb5-kdc krb5-admin-server &&
+    #     krb5_newrealm -p password123 &&
+    #     kadmin.local -q 'addprinc -pw admin123 admin/admin' &&
+    #     kadmin.local -q 'addprinc -pw user123 testuser' &&
+    #     /usr/sbin/krb5kdc -n
+    #   "
+    command: >
+      bash -c "
+        apt-get update && 
+        echo APT_GET Updtes compeled \n\n\n\n\n &&
+        apt-get install -yq krb5-kdc krb5-admin-server &&
+        echo Installation compeled \n\n\n\n\n &&
+        kdb5_util create -s -r JAI.NET -P jai
+        kadmin.local -q 'addprinc -pw jai admin/admin'
+        kadmin.local -q 'addprinc -pw jai root/admin'
+        kadmin.local -q 'addprinc -pw jai testuser/user'
+        /usr/sbin/krb5kdc -n
+      "
+
+  # kerberos-client:
+  #   image: ubuntu:24.04
+  #   hostname: client.jai.net
+  #   container_name: kerberos-client
+  #   volumes:
+  #     - ./krb5.conf:/etc/krb5.conf
+  #   command: >
+  #     bash -c "
+  #       apt-get update && 
+  #       apt-get install -y krb5-user openssh-client &&
+  #       tail -f /dev/null
+  #     "
+  #   depends_on:
+  #     - kerberos-server
+
+  # ssh-server:
+  #   image: ubuntu:24.04
+  #   hostname: ssh.jai.net
+  #   container_name: ssh-server
+  #   volumes:
+  #     - ./krb5.conf:/etc/krb5.conf
+  #   ports:
+  #     - "2222:22"  # SSH port
+  #   command: >
+  #     bash -c "
+  #       apt-get update && 
+  #       apt-get install -y openssh-server krb5-user libpam-krb5 &&
+  #       echo 'KerberosAuthentication yes' >> /etc/ssh/sshd_config &&
+  #       echo 'GSSAPIAuthentication yes' >> /etc/ssh/sshd_config &&
+  #       adduser --disabled-password --gecos '' testuser &&
+  #       service ssh start &&
+  #       tail -f /dev/null
+  #     "
+  #   depends_on:
+  #     - kerberos-server
