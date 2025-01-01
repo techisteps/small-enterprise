@@ -1,0 +1,5 @@
+dn: cn=joe,ou=Group,dc=jai,dc=net
+objectClass: top
+objectClass: posixGroup
+cn: joe
+gidNumber: 9999

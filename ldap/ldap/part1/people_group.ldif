@@ -1,0 +1,11 @@
+# People, jai.net
+dn: ou=People,dc=jai,dc=net
+ou: People
+objectClass: top
+objectClass: organizationalUnit
+
+# Groups, jai.net
+dn: ou=Group,dc=jai,dc=net
+ou: Group
+objectClass: top
+objectClass: organizationalUnit

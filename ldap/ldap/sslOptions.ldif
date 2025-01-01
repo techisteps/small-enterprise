@@ -1,0 +1,14 @@
+dn: cn=config
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/ssl/slapdcert.pem
+-
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/ssl/slapdkey.pem
+
+dn: cn=config
+add: olcTLSProtocolMin
+olcTLSProtocolMin: 3.3
+-
+add: olcTLSCipherSuite
+olcTLSCipherSuite: DEFAULT:!kRSA:!kDHE
+-

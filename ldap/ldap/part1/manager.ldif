@@ -1,0 +1,14 @@
+# jai.net
+dn: dc=jai,dc=net
+dc: jai
+o: jai Organization
+objectClass: dcObject
+objectClass: organization
+
+# Manager, jai.net
+dn: cn=Manager,dc=jai,dc=net
+cn: Manager
+description: LDAP administrator
+objectClass: organizationalRole
+objectClass: top
+roleOccupant: dc=jai,dc=net

@@ -1,0 +1,11 @@
+dn: dc=jai,dc=net
+objectClass: dcObject
+objectClass: organization
+dc: jai
+o: jai
+description: jai directory
+
+dn: cn=Manager,dc=jai,dc=net
+objectClass: organizationalRole
+cn: Manager
+description: Directory Manager
