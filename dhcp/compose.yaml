@@ -1,0 +1,27 @@
+name: dhcpmaster
+
+services:
+  dhcpmaster:
+    build: .
+    tty: true
+    stdin_open: true
+    container_name: dhcpmaster
+    hostname: dhcpmaster.jai.net
+    networks:
+      jai_net:
+        ipv4_address: 172.28.0.5
+      dhcp_net:
+        ipv4_address: 172.50.0.5
+    
+    # ports:
+    #   - "80:80"
+    # depends_on:
+    #   - db
+    # command: tail -f /dev/null &
+    # command: /bin/bash -c "sleep infinity"
+
+networks:
+  jai_net:  
+    external: true
+  dhcp_net:  
+    external: true
