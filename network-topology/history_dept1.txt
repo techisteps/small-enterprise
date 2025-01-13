@@ -1,0 +1,259 @@
+   0 setup-apkrepos 
+   1 whoami
+   2 ls -rlt
+   3 clear
+   4 shutdown
+   5 poweroff
+   6 ip -c a
+   7 ip a
+   8 apk add apache2-utils bash bind-tools bridge-utils busybox-extras conntrack-tools curl drill ethtool file fping iftop iperf3 iproute2 ipset iptables iputils ipvsadm jq libc6-compat ltrace net-snmp-tools netcat-openbsd nftables ngrep nmap nmap-nping nmap-scripts openssl py3-setuptools socat speedtest-cli openssh strace tcpdump util-linux vim git zsh perl-crypt-ssleay perl-net-ssleay
+   9 ip -c a
+  10 exit
+  11 poweroff
+  12 setup-hostname 
+  13 cat /etc/hostname 
+  14 hostname
+  15 hostname --help
+  16 hostname -F /etc/hostname 
+  17 hostname
+  18 setup-interfaces 
+  19 rc-service networking restart
+  20 ping 192.168.10.100
+  21 ping 8.8.8.8
+  22 poweroff
+  23 ping 8.8.8.8
+  24 ping 192.168.10.200
+  25 ip -c a
+  26 ping 192.168.10.100
+  27 poweroff
+  28 ip -c a
+  29 ping 8.8.8.8
+  30 ip route
+  31 ip route add 10.0.20/24 via 192.168.10.1
+  32 ip route add 192.168.10.0/24 via 10.0.2.2
+  33 ip route add 192.168.10.0/24 via 10.0.2.1
+  34 ip route
+  35 ping 8.8.8.8
+  36 ip route add default via 192.168.10.100
+  37 ip -c a
+  38 ping 8.8.8.8
+  39 rc-service networking restart
+  40 ping 8.8.8.8
+  41 traceroute 8.8.8.8
+  42 ip -c a
+  43 ifup eth0
+  44 ping 8.8.8.8
+  45 ip -c a
+  46 setup-interfaces 
+  47 rc-service networking restart
+  48 ping 192.168.1.1
+  49 ip -c a
+  50 if down eth0
+  51 ifdown eth0
+  52 ip -c a
+  53 rc-service networking stop
+  54 rc-service networking start
+  55 ping 8.8.8.8
+  56 poweroff
+  57 ip -c a
+  58 route
+  59 route -n
+  60 ping 192.168.1.1
+  61 rc-service networking restart
+  62 ip -c a
+  63 ping 192.168.1.1
+  64 ping 8.8.8.8
+  65 ip route help
+  66 ip route -h
+  67 ip route help
+  68 ip -V
+  69 ip -h
+  70 clear
+  71 ip -h
+  72 ip route
+  73 ip route -h
+  74 ip -f ip route
+  75 ip -4 -r route
+  76 ip -4 route
+  77 ip -4 -N route
+  78 ip -4 -d route
+  79 ip -4 -d -h route
+  80 ip -4 -h route
+  81 ip -4 -o route
+  82 ip -4 -o -c route
+  83 ip -4 -o -c route -n
+  84 ip -4 -o -c route show root
+  85 ip -4 -o -c route show root 192
+  86 ip -4 -o -c route show table all
+  87 clear
+  88 ip -c a
+  89 clear
+  90 ip -c a
+  91 ip -4 -o -c route show table all
+  92 ip -4 -o -c route show table main
+  93 ip -4 -o -c route show table default
+  94 ip -4 -o -c route show table local
+  95 ip -4 -o -c route -a
+  96 ip -4 -o -c route get table
+  97 clear
+  98 ip -4 -o -c route show scope host
+  99 ip -4 -o -c route show scope link
+ 100 ip -4 -o -c route show scope global
+ 101 ip -c a
+ 102 cat /etc/network/interfaces 
+ 103 ip -4 -o -c route show proto kernel
+ 104 ip -4 -o -c route show proto boot
+ 105 ip -4 -o -c route show proto static
+ 106 nft
+ 107 nft --help
+ 108 clear
+ 109 ping 8.8.8.8
+ 110 ping 192.168.1.1
+ 111 ip -c a
+ 112 ifdown eth0
+ 113 ifup eth0
+ 114 ip -c a
+ 115 pimg 192.168.1.1
+ 116 ping 192.168.1.1
+ 117 ping 8.8.8.8
+ 118 history
+ 119 ping 8.8.8.8
+ 120 ip -c a
+ 121 ifdown eth0 
+ 122 ifup eth0 
+ 123 ping 8.8.8.8
+ 124 route -ne
+ 125 ip route del default
+ 126 route -ne
+ 127 ip route add default via 10.0.2.2
+ 128 ip route add default via 10.0.2.2 nexthop 192.168.
+ 129 ip route add default via 10.0.2.2 nexthop 192.168.1.1
+ 130 ip route add multicast default via 192.168.1.1 nexthop 10.0.2.2
+ 131 ip route add multicast default via 192.168.1.1 nexthop via 10.0.2.2
+ 132 ip route add multicast default via 192.168.1.1
+ 133 ip route add default via 192.168.1.1
+ 134 route -ne
+ 135 ping 8.8.8.8
+ 136 nslookup myip.opendns.com resolver1.opendns.com
+ 137 curl -s ifconfig.me
+ 138 curl --help
+ 139 curl ifconfig.me
+ 140 curl ifconfig.me/ua
+ 141 curl ifconfig.me/forwarded
+ 142 curl ifconfig.me/all
+ 143 clear
+ 144 curl ifconfig.me/all
+ 145 ip route
+ 146 ip -c a
+ 147 ip -c route
+ 148 history
+ 149 clear
+ 150 ip -c a
+ 151 ip -c route
+ 152 poweroff
+ 153 setup-hostname dept1
+ 154 hostname -F /etc/hostname 
+ 155 hostname
+ 156 clear
+ 157 setup-interfaces 
+ 158 ping 192.168.1.1
+ 159 ip -c link
+ 160 rc-service networking restart
+ 161 ip -c a
+ 162 poweroff
+ 163 clear
+ 164 cat /etc/network/interfaces 
+ 165 ip -c link
+ 166 clear
+ 167 ip -c a
+ 168 ip -c a 192.168.1.1
+ 169 ip -c 192.168.1.1
+ 170 ping -c 192.168.1.1
+ 171 ping -c2 192.168.1.1
+ 172 ping -c2 192.168.2.1
+ 173 ping -c2 192.168.2.2
+ 174 ping -c2 172.16.1.1
+ 175 ping -c2 172.16.1.2
+ 176 ping 8.8.8.8
+ 177 clear
+ 178 ping -c2 192.168.1.1
+ 179 ping -c2 10.0.2.2
+ 180 ping -c2 10.0.2.15
+ 181 ping -c2 192.168.2.1
+ 182 ping -c2 192.168.2.2
+ 183 ping -c2 172.16.2.1
+ 184 iptables -t nat -L -n --line-numbers
+ 185 ip route
+ 186 ping 10.0.2.15
+ 187 cat /etc/network/interfaces 
+ 188 clear
+ 189 ip route
+ 190 history | grep route | grep 172
+ 191 history | grep route
+ 192 cat /etc/network/interfaces 
+ 193 ls -lrt
+ 194 iptables -t nat -L -n --line-numbers
+ 195 ping 8.8.8.8
+ 196 clear
+ 197 ip -c a
+ 198 ip route
+ 199 iptables -t nat -L -n --line-numbers
+ 200 iptables -t all -L -n --line-numbers
+ 201 clear
+ 202 ping 8.8.8.8
+ 203 iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -o eth1 -j MASQUERADE
+ 204 iptables -t nat -L -n --line-numbers
+ 205 ip route
+ 206 history | route
+ 207 history | grep route
+ 208 ip route
+ 209 rc-service networking stop
+ 210 vi /etc/network/interfaces 
+ 211 rc-service networking start
+ 212 ip route
+ 213 clear
+ 214 ip route
+ 215 iptables -t nat -L -n --line-numbers
+ 216 traceroute -n -I -i eth0 8.8.8.8
+ 217 ip route
+ 218 sysctl -p
+ 219 vi /etc/sysctl.conf 
+ 220 sysctl -a | grep forward
+ 221 echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf  
+ 222 cat /etc/sysctl.conf 
+ 223 sysctl -p
+ 224 traceroute
+ 225 traceroute -n -I -i eth0 8.8.8.8
+ 226 traceroute -n -I -s 172.16.1.2 -i eth0 8.8.8.8
+ 227 traceroute -n -I -s 172.16.1.2  8.8.8.8
+ 228 traceroute -n -I -s 172.16.1.1  8.8.8.8
+ 229 traceroute -n -I -s 192.168.1.2  8.8.8.8
+ 230 traceroute -n -I -r 8.8.8.8
+ 231 traceroute -n -I 8.8.8.8
+ 232 traceroute -n -I -r 192.168.1.1
+ 233 traceroute -n -I -r 192.168.2.1
+ 234 traceroute -n -I 192.168.2.1
+ 235 traceroute
+ 236 traceroute -n -l -I -i eth0 8.8.8.8
+ 237 traceroute -n -I -i eth0 8.8.8.8
+ 238 traceroute -n -I -i eth0 10.0.2.2
+ 239 clear
+ 240 ip route
+ 241 sysctl -p
+ 242 iptables-t nat -L -n --line-numbers
+ 243 iptables -t nat -L -n --line-numbers
+ 244 rc-service networking restart
+ 245 clear
+ 246 ip route
+ 247 sysctl -p
+ 248 iptables -t nat -L -n --line-numbers
+ 249 ping 10.0.2.2
+ 250 cat /proc/sys/net/ipv4/ip_forward
+ 251 iptables -A FORWARD -j ACCEPT
+ 252 iptables -t nat -L -n --line-numbers
+ 253 iptables -t nat -D 1
+ 254 iptables -t nat -L -n --line-numbers
+ 255 iptables -h
+ 256 iptables -h | less
+ 257 history | grep iptables
+ 258 history > history.txt
