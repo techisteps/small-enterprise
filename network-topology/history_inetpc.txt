@@ -1,0 +1,207 @@
+   0 setup-apkrepos 
+   1 whoami
+   2 ls -rlt
+   3 clear
+   4 shutdown
+   5 poweroff
+   6 ip -c a
+   7 ip a
+   8 apk add apache2-utils bash bind-tools bridge-utils busybox-extras conntrack-tools curl drill ethtool file fping iftop iperf3 iproute2 ipset iptables iputils ipvsadm jq libc6-compat ltrace net-snmp-tools netcat-openbsd nftables ngrep nmap nmap-nping nmap-scripts openssl py3-setuptools socat speedtest-cli openssh strace tcpdump util-linux vim git zsh perl-crypt-ssleay perl-net-ssleay
+   9 ip -c a
+  10 exit
+  11 poweroff
+  12 vi /etc/network/interfaces 
+  13 ip -c a
+  14 setup-interfaces 
+  15 cat /etc/network/interfaces 
+  16 clear
+  17 cat /etc/network/interfaces 
+  18 rc-service networking restart
+  19 ip -c a
+  20 ping 8.8.8.8
+  21 sysctl net.ipv4.ip_forward
+  22 sysctl -w net.ipv4.ip_forward
+  23 sysctl net.ipv4.ip_forward
+  24 sysctl -w net.ipv4.ip_forward = 1
+  25 sysctl net.ipv4.ip_forward
+  26 sysctl net.ipv4.ip_forward=1
+  27 sysctl net.ipv4.ip_forward
+  28 sysctl -p
+  29 sysctl net.ipv4.ip_forward
+  30 rc-service networking stop
+  31 iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+  32 iptables-save > /etc/iptables/rules-save
+  33 rc-service networking start
+  34 ping 8.8.8.8
+  35 poweroff
+  36 ip -c a
+  37 ping 192.168.1.2
+  38 clear
+  39 nft --help
+  40 nft -a
+  41 nft -i
+  42 nft -n
+  43 nft --help
+  44 nft show
+  45 sysctl -p
+  46 iptables -L
+  47 iptables -L -n
+  48 iptables --help
+  49 iptables -t nat -L
+  50 clear
+  51 iptables -t nat -L
+  52 iptables -t nat -n -L
+  53 ip -c a
+  54 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+  55 iptables -t nat -n -L
+  56 cat /etc/network/interfaces 
+  57 ip route
+  58 iptables -t nat -A POSTROUTING -s 192.168.1.0/24  -o eth0 -j MASQUERADE
+  59 ip route
+  60 iptables -t nat -n -L
+  61 ip route
+  62 ip -c a
+  63 ip route
+  64 ip -4 -o -c route show table all
+  65 ip -4 -o -c route rile
+  66 ip -4 -o -c route rule show
+  67 ip -4 -o -c rule
+  68 ip -4 -o -c rule from 192.168
+  69 ip -4 -o -c rule from 192.168.0.2
+  70 ip -4 -o -c rule show from 192.168.0.2
+  71 ip -4 -o -c rule show iif eth0
+  72 ip -4 -o -c rule show iif eth1
+  73 ip -4 -o -c rule show oif eth0
+  74 ip -4 -o -c rule show oif eth1
+  75 iptables -t nat -n -L
+  76 ip -c a
+  77 ifdown eth1
+  78 ifup eth1
+  79 route -n
+  80 route add -net 192.168.1.0/24 gw 10.0.2.2
+  81 route -n
+  82 route -n -a
+  83 route -ne
+  84 route -ne del -net 192.168
+  85 route -ne del -net 192.168.0.1/24
+  86 route del -net 192.168.1.0/24 gw 10.0.2.2
+  87 route add -net 192.168.0.0/24 gw 10.0.2.2
+  88 route -ne
+  89 sysctl -p
+  90 sysctl -h
+  91 sysctl -a
+  92 sysctl -a | grep ipv4
+  93 sysctl -a | grep ipv4_for
+  94 sysctl -a | grep forward
+  95 clear
+  96 sysctl -a | grep forward
+  97 cat /etc/sysctl.conf 
+  98 vi  /etc/sysctl.conf 
+  99 sysctl -p
+ 100 sysctl -a | grep forward
+ 101 clear
+ 102 ip route
+ 103 clear
+ 104 ip -c a
+ 105 ip -c route
+ 106 history
+ 107 clear
+ 108 ip -c a
+ 109 ip -c route
+ 110 nft -h
+ 111 nft -c
+ 112 nft -p
+ 113 nft -e
+ 114 nft --help
+ 115 poweroff
+ 116 setup-hostname 
+ 117 hostname -F /etc/hostname 
+ 118 hstname
+ 119 hostname 
+ 120 ip -c a
+ 121 setup-interfaces 
+ 122 clear
+ 123 setup-interfaces 
+ 124 clear
+ 125 setup-interfaces 
+ 126 clear
+ 127 ip -c a
+ 128 ip -c route
+ 129 ifup eth2
+ 130 ip -c route
+ 131 ip -c a
+ 132 ping 192.168.1.2
+ 133 clear
+ 134 cat /etc/network/interfaces 
+ 135 ip -c link
+ 136 poweroff
+ 137 clear
+ 138 cat /etc/network/interfaces 
+ 139 ip -c link
+ 140 clear
+ 141 ip -c a
+ 142 ping 8.8.8.8
+ 143 ping -c2 8.8.8.8
+ 144 cat /etc/network/interfaces 
+ 145 cat /etc/sysctl.conf 
+ 146 sysctl -a | grep forw
+ 147 ping -c2 192.168.2.1
+ 148 ping -c2 192.168.2.2
+ 149 ping -c2 172.16.2.1
+ 150 ip -c a
+ 151 iptables -t nat -n -L
+ 152 history | grep iptables
+ 153 !58
+ 154 !!58
+ 155 iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j 
+ 156 iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
+ 157 iptables -t nat -n -L
+ 158 rc-service networking restart
+ 159 ip route
+ 160 ip -c route
+ 161 clear
+ 162 ip -c a
+ 163 ip route
+ 164 cat /etc/passwd
+ 165 history | grep ipta
+ 166 iptables -t nat -L -n --line-numbers
+ 167 ip route
+ 168 clear
+ 169 iptables -t nat -L -n --line-numbers
+ 170 history | grep iptable 
+ 171 iptables -nat -A POSTROUTING -s 192.168.2.0/24 -o eth0 -j MASQUERADE
+ 172 iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -o eth0 -j MASQUERADE
+ 173 iptables -t nat -L -n --line-numbers
+ 174 clear
+ 175 iptables -t nat -L -n --line-numbers
+ 176 ip route
+ 177 history | grep trace
+ 178 traceroute -I eth0 8.8.8.8
+ 179 traceroute --help | less
+ 180 !
+ 181 traceroute --help | less
+ 182 traceroute --help 
+ 183 traceroute -n -i eth0 8.8.8.8
+ 184 traceroute -n -I -i eth0 8.8.8.8
+ 185 traceroute -n -I -s 192.168.1.2 -i eth0 8.8.8.8
+ 186 traceroute -n -I -s 192.168.1.1 -i eth0 8.8.8.8
+ 187 traceroute -n -I -s 10.0.2.15 -i eth0 8.8.8.8
+ 188 clear
+ 189 ip route
+ 190 sysctl -p
+ 191 iptables -t nat -L -n --line-numbers
+ 192 cat /proc/sys/net/ipv4/ip_forward
+ 193 cat /etc/iptables/rules-save 
+ 194 iptables -A FORWARD -j ACCEPT
+ 195 iptables -t nat -L -n --line-numbers
+ 196 ip route
+ 197 ip route add 172.16.1.0/24 via 192.168.1.2 dev eth1
+ 198 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+ 199 iptables -t nat -L -n --line-numbers
+ 200 ip neigh
+ 201 history | grep iptable
+ 202 iptables-save > /etc/iptables/rules-save 
+ 203 cat /etc/iptables/rules-save 
+ 204 clear
+ 205 cat /etc/iptables/rules-save 
+ 206 history > history.txt

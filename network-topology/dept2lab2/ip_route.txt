@@ -1,0 +1,2 @@
+default via 172.16.1.1 dev eth0 metric 1 onlink 
+172.16.1.0/24 dev eth0 proto kernel scope link src 172.16.1.2 
