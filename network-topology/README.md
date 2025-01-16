@@ -2,7 +2,24 @@
 
 In this tutorial we'll create a network topology with 5 VBOX VM's. Please refer to the `NetworkDiagram.drawio` file for further details. This file can be open with `https://app.diagrams.net/`.
 
-We have to create 5 Vbox Vm's. This will be tedious thus we'll create a baseApline image and clone it to create 5 Vbox Vm's.
+## Objective
+The objective of this tutorial is to create a network topology with 5 VBOX VM's and setup networking between them so that they can communicate with each other and can access internet.
+
+- Step 1: Create 5 Vbox Vm's and setup network based on given diagram
+- Step 2: Setup routing between Vbox Vm's
+- Step 3: Setup NAT so that we can access internet from each of the Vbox Vm's
+
+### The 3 most important steps are as below:
+
+1. ***Setup interfaces:***  
+    In this step we have to set `IP`, `Subnet`, `Gateway` to all network interfaces on each of the Vm's. This is based on how physically the network cards are attached. This means how the designated route can be reached.
+2. ***Setup routing:***  
+    If two network cards are physically attached with same cable then traffic can flow between them directly without any routing. If two network cards are attached to the same switch then we need to setup routing between them to allow traffic to flow.
+    This step consist of `IP Forwarding` and `Routing`.
+3. ***Setup NAT:***  
+    Internet traffic for our network will flow from main router in this case `inetPC` Vm acting as router for our network. In this step we have to setup NAT so that we can access internet from each of the Vbox Vm's. NAT will translate our private IP to public IP and vice versa.
+
+We have to create 5 Vbox Vm's. This will be tedious thus we'll create a `baseApline` image and clone it to create 5 Vbox Vm's.
 
 ## Create VM's
 
@@ -93,7 +110,7 @@ Use below details to setup all machines.
 
 
 ## Download Packages on `baseAlpine`
-Download network realated packages on inetPC. Later these packages will be installed on each of the VM's.
+Download network related packages on inetPC. Later these packages will be installed on each of the VM's.
 
 ```bash
 # Create folder to hold packages
@@ -221,3 +238,101 @@ Use below details to setup all machines.
 >        From dept2lab2 `ping 192.168.2.2` should be working as interface is physically attached to the gateway.  
 >        From dept2lab2 `ping 192.168.2.1` should not work as there is no route to that interface. Routing well be setup later.   
 >        From dept2 `ping 172.16.2.2` should be working.  
+
+
+Routes:
+
+> ping pattern to test `ping -4 -n -c2 -I eth0 192.168.1.1`
+
+| Route No.| PC Name| Source Interface | Source IP | Target IP| Default | IPF Run1 | IPF Run2 | IPF Run3 | IPF Run4 | IPF Run5 | With Routing |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+|1 | inetpc    | eth1 | 192.168.1.1 | 192.168.1.2 | P | - | - | - | - | - | - |
+|2 | inetpc    | eth1 | 192.168.1.1 | 192.168.2.1 | F | - | - | - | - | - | - |
+|3 | inetpc    | eth1 | 192.168.1.1 | 192.168.2.2 | F | - | - | - | - | - | - |
+|4 | inetpc    | eth1 | 192.168.1.1 | 172.16.1.1  | F | - | - | - | - | - | - |
+|5 | inetpc    | eth1 | 192.168.1.1 | 172.16.1.2  | F | - | - | - | - | - | - |
+|6 | inetpc    | eth1 | 192.168.1.1 | 172.16.2.1  | F | - | - | - | - | - | - |
+|7 | inetpc    | eth1 | 192.168.1.1 | 172.16.2.2  | F | - | - | - | - | - | - |
+|8 | inetpc    | eth2 | 192.168.2.1 | 192.168.1.1 | F | - | - | - | - | - | - |
+|9 | inetpc    | eth2 | 192.168.2.1 | 192.168.1.2 | F | - | - | - | - | - | - |
+|10| inetpc    | eth2 | 192.168.2.1 | 192.168.2.2 | P | - | - | - | - | - | - |
+|11| inetpc    | eth2 | 192.168.2.1 | 172.16.1.1  | F | - | - | - | - | - | - |
+|12| inetpc    | eth2 | 192.168.2.1 | 172.16.1.2  | F | - | - | - | - | - | - |
+|13| inetpc    | eth2 | 192.168.2.1 | 172.16.2.1  | F | - | - | - | - | - | - |
+|14| inetpc    | eth2 | 192.168.2.1 | 172.16.2.2  | F | - | - | - | - | - | - |
+|15| dept1     | eth1 | 192.168.1.2 | 192.168.1.1 | P | P | P | P | P | P | - |
+|16| dept1     | eth1 | 192.168.1.2 | 192.168.2.1 | P | P | P | P | P | P | - |
+|17| dept1     | eth1 | 192.168.1.2 | 192.168.2.2 | F | P | F | F | F | P | - |
+|18| dept1     | eth1 | 192.168.1.2 | 172.16.1.1  | F | F | F | F | F | F | - |
+|19| dept1     | eth1 | 192.168.1.2 | 172.16.1.2  | F | F | F | F | F | F | - |
+|20| dept1     | eth1 | 192.168.1.2 | 172.16.2.1  | F | F | F | F | F | F | - |
+|21| dept1     | eth1 | 192.168.1.2 | 172.16.2.2  | F | F | F | F | F | F | - |
+|22| dept1     | eth2 | 172.16.1.1  | 192.168.1.1 | F | F | F | F | F | F | - |
+|23| dept1     | eth2 | 172.16.1.1  | 192.168.1.2 | F | F | F | F | F | F | - |
+|24| dept1     | eth2 | 172.16.1.1  | 192.168.2.1 | F | F | F | F | F | F | - |
+|25| dept1     | eth2 | 172.16.1.1  | 192.168.2.2 | F | F | F | F | F | F | - |
+|26| dept1     | eth2 | 172.16.1.1  | 172.16.1.2  | P | P | P | P | P | P | - |
+|27| dept1     | eth2 | 172.16.1.1  | 172.16.2.1  | F | F | F | F | F | F | - |
+|28| dept1     | eth2 | 172.16.1.1  | 172.16.2.2  | F | F | F | F | F | F | - |
+|29| dept2     | eth1 | 192.168.2.2 | 192.168.1.1 | P | P | P | P | P | P | - |
+|30| dept2     | eth1 | 192.168.2.2 | 192.168.1.2 | F | P | F | F | F | P | - |
+|31| dept2     | eth1 | 192.168.2.2 | 192.168.2.1 | P | P | P | P | P | P | - |
+|32| dept2     | eth1 | 192.168.2.2 | 172.16.1.1  | F | F | F | F | F | F | - |
+|33| dept2     | eth1 | 192.168.2.2 | 172.16.1.2  | F | F | F | F | F | F | - |
+|34| dept2     | eth1 | 192.168.2.2 | 172.16.2.1  | F | F | F | F | F | F | - |
+|35| dept2     | eth1 | 192.168.2.2 | 172.16.2.2  | F | F | F | F | F | F | - |
+|36| dept2     | eth2 | 172.16.2.1  | 192.168.1.1 | F | F | F | F | F | F | - |
+|37| dept2     | eth2 | 172.16.2.1  | 192.168.1.2 | F | F | F | F | F | F | - |
+|38| dept2     | eth2 | 172.16.2.1  | 192.168.2.1 | F | F | F | F | F | F | - |
+|39| dept2     | eth2 | 172.16.2.1  | 192.168.2.2 | F | F | F | F | F | F | - |
+|40| dept2     | eth2 | 172.16.2.1  | 172.16.1.1  | F | F | F | F | F | F | - |
+|41| dept2     | eth2 | 172.16.2.1  | 172.16.1.2  | F | F | F | F | F | F | - |
+|42| dept2     | eth2 | 172.16.2.1  | 172.16.2.2  | P | P | P | P | P | P | - |
+|43| dept1lab1 | eth1 | 172.16.1.2  | 192.168.1.1 | F | F | F | F | F | F | - |
+|44| dept1lab1 | eth1 | 172.16.1.2  | 192.168.1.2 | P | P | P | P | P | P | - |
+|45| dept1lab1 | eth1 | 172.16.1.2  | 192.168.2.1 | F | F | F | F | F | F | - |
+|46| dept1lab1 | eth1 | 172.16.1.2  | 192.168.2.2 | F | F | F | F | F | F | - |
+|47| dept1lab1 | eth1 | 172.16.1.2  | 172.16.1.1  | P | P | P | P | P | P | - |
+|48| dept1lab1 | eth1 | 172.16.1.2  | 172.16.2.1  | F | F | F | F | F | F | - |
+|49| dept1lab1 | eth1 | 172.16.1.2  | 172.16.2.2  | F | F | F | F | F | F | - |
+|50| dept2lab2 | eth1 | 172.16.2.2  | 192.168.1.1 | F | F | F | F | F | F | - |
+|51| dept2lab2 | eth1 | 172.16.2.2  | 192.168.1.2 | F | F | F | F | F | F | - |
+|52| dept2lab2 | eth1 | 172.16.2.2  | 192.168.2.1 | F | F | F | F | F | F | - |
+|53| dept2lab2 | eth1 | 172.16.2.2  | 192.168.2.2 | P | P | P | P | P | P | - |
+|54| dept2lab2 | eth1 | 172.16.2.2  | 172.16.1.1  | F | F | F | F | F | F | - |
+|55| dept2lab2 | eth1 | 172.16.2.2  | 172.16.1.2  | F | F | F | F | F | F | - |
+|56| dept2lab2 | eth1 | 172.16.2.2  | 172.16.2.1  | P | P | P | P | P | P | - |
+
+
+```bash
+# Define routing table
+ip route add 172.16.1.0/24 via 192.168.1.2
+ip route add 172.16.2.0/24 via 192.168.2.2
+
+# Save restored routing table
+ip route restore ip_route.save
+ip route restore < ./ip_route.save
+```
+
+<!-- ip route add 172.16.1.0/24 via 192.168.1.2 dev eth1
+ip route add 172.16.2.0/24 via 192.168.2.2 dev eth1 -->
+
+```bash
+# Masquerading using IPTABLES
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+```
+
+```bash
+# To test the syntax of NFT file 
+nft -c -f inetpc_nat.nft
+
+# To apply the NFT file 
+nft -f inetpc_nat.nft
+```
+
+Reference: 
+https://www.mankier.com/8/nft#   
+https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes  
+https://www.netfilter.org/projects/nftables/manpage.html  
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/security_guide/sec-creating_and_managing_nftables_tables_chains_and_rules#sec-Creating_an_nftables_chain  
+https://www.youtube.com/playlist?list=PLUF494I4KUvqwDjhOoP3IFUpgEhE1OVDO

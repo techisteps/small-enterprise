@@ -1,0 +1,8 @@
+flush ruleset
+
+table ip natmasq_t {
+    chain natmasq_c {
+        type nat hook postrouting priority 0; policy accept;
+        oif eth0 masquerade
+    }
+}
